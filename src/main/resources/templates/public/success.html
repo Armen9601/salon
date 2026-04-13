@@ -1,0 +1,22 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body th:replace="~{fragments/layout :: layout(~{::main})}">
+<main class="py-5">
+  <div class="mx-auto" style="max-width: 720px;">
+    <div class="p-5 rounded-4 card-glass text-center">
+      <div class="badge badge-gold rounded-pill px-3 py-2 mb-3" th:text="#{success.badge}">Booked</div>
+      <h1 class="h3 fw-bold mb-2" th:text="#{success.title}">Booking confirmed</h1>
+      <p class="text-secondary mb-4" th:text="#{success.subtitle}">
+        Your booking is saved. If the slot was taken a moment ago, please choose another time.
+      </p>
+      <div class="text-secondary small mb-4">
+        <span th:text="#{success.id}">Booking ID</span>:
+        <span class="badge badge-gold rounded-pill" th:text="${bookingId}">1</span>
+      </div>
+      <a class="btn btn-gold" th:href="@{/barbers}" th:text="#{success.cta}">Book another</a>
+    </div>
+  </div>
+</main>
+</body>
+</html>
+

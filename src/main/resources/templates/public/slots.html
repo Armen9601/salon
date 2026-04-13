@@ -1,0 +1,58 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body th:replace="~{fragments/layout :: layout(~{::main})}">
+<main>
+  <div class="mb-3">
+    <a class="text-decoration-none text-secondary" th:href="@{/barbers/{id}(id=${barber.id})}">← <span th:text="#{slots.back}">Back</span></a>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-5">
+      <div class="p-4 rounded-4 card-glass">
+        <h1 class="h5 fw-bold mb-2" th:text="#{slots.title}">Free hours</h1>
+        <div class="text-secondary mb-3">
+          <span th:text="${barber.fullName}">Barber</span>
+          • <span th:text="${#temporals.format(date,'yyyy-MM-dd')}">2026-01-01</span>
+        </div>
+
+        <div class="mb-2 fw-semibold" th:text="#{slots.selectedServices}">Selected services</div>
+        <ul class="text-secondary mb-3">
+          <li th:each="s : ${services}"
+              th:text="${#locale.language=='ru' ? s.nameRu : (#locale.language=='hy' ? s.nameHy : s.nameEn)}">
+            Service
+          </li>
+        </ul>
+
+        <div class="d-flex gap-2 flex-wrap">
+          <span class="badge badge-gold rounded-pill" th:text="${quote.totalDurationMinutes} + ' ' + #{minutes}">50 min</span>
+          <span class="badge badge-gold rounded-pill" th:text="${quote.totalPriceAmd} + ' AMD'">9000 AMD</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-7">
+      <div class="p-4 rounded-4 card-glass">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+          <h2 class="h6 fw-semibold mb-0" th:text="#{slots.chooseTime}">Choose a time</h2>
+          <span class="text-secondary small" th:text="#{slots.step}">Slots are shown every 15 minutes.</span>
+        </div>
+
+        <div th:if="${#lists.isEmpty(slots)}" class="alert alert-warning">
+          <span th:text="#{slots.none}">No free hours for this day.</span>
+        </div>
+
+        <div class="row g-2" th:if="${!#lists.isEmpty(slots)}">
+          <div class="col-6 col-md-4 col-lg-3" th:each="s : ${slots}">
+            <a class="btn btn-outline-light w-100 py-2"
+               th:href="@{/book(barberId=${barber.id},date=${date},time=${#temporals.format(s.startAt,'HH:mm')},serviceIds=${serviceIds})}">
+              <span th:text="${#temporals.format(s.startAt,'HH:mm')}">10:00</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
+

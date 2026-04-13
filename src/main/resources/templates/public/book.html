@@ -1,0 +1,82 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body th:replace="~{fragments/layout :: layout(~{::main})}">
+<main>
+  <div class="row g-4">
+    <div class="col-lg-5">
+      <div class="p-4 rounded-4 card-glass">
+        <h1 class="h5 fw-bold mb-2" th:text="#{book.title}">Confirm booking</h1>
+        <div class="text-secondary mb-3">
+          <div><span th:text="#{book.barber}">Barber</span>: <span th:text="${barber.fullName}">Name</span></div>
+          <div><span th:text="#{book.date}">Date</span>: <span th:text="${#temporals.format(req.date,'yyyy-MM-dd')}">2026-01-01</span></div>
+          <div><span th:text="#{book.time}">Time</span>: <span th:text="${#temporals.format(req.time,'HH:mm')}">10:00</span></div>
+        </div>
+
+        <div class="mb-2 fw-semibold" th:text="#{book.services}">Services</div>
+        <ul class="text-secondary mb-3">
+          <li th:each="s : ${services}"
+              th:text="${#locale.language=='ru' ? s.nameRu : (#locale.language=='hy' ? s.nameHy : s.nameEn)}">
+            Service
+          </li>
+        </ul>
+
+        <div class="d-flex gap-2 flex-wrap">
+          <span class="badge badge-gold rounded-pill" th:text="${quote.totalDurationMinutes} + ' ' + #{minutes}">50 min</span>
+          <span class="badge badge-gold rounded-pill" th:text="${quote.totalPriceAmd} + ' AMD'">9000 AMD</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-7">
+      <div class="p-4 rounded-4 card-glass">
+        <div th:if="${error}" class="alert alert-danger"
+             th:text="${error == 'SERVICE_CONFLICT' ? #{validation.servicesConflict} : error}">
+          Error
+        </div>
+
+        <form th:action="@{/book}" method="post" th:object="${req}" class="row g-3">
+          <input type="hidden" th:field="*{barberId}">
+          <input type="hidden" th:field="*{date}">
+          <input type="hidden" th:field="*{time}">
+          <div th:each="sid : *{serviceIds}">
+            <input type="hidden" name="serviceIds" th:value="${sid}">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label" th:text="#{book.name}">Name</label>
+            <input class="form-control bg-dark text-light border-secondary"
+                   th:field="*{customerName}"
+                   autocomplete="name"
+                   inputmode="text"
+                   pattern="[\p{L} .'-]+"
+                   minlength="2"
+                   maxlength="60"
+                   th:placeholder="#{book.name.placeholder}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}">err</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" th:text="#{book.phone}">Phone</label>
+            <input class="form-control bg-dark text-light border-secondary"
+                   th:field="*{customerPhone}"
+                   type="tel"
+                   inputmode="numeric"
+                   autocomplete="tel"
+                   pattern="[0-9]{5,15}"
+                   minlength="5"
+                   maxlength="15"
+                   th:placeholder="#{book.phone.placeholder}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('customerPhone')}" th:errors="*{customerPhone}">err</div>
+          </div>
+
+          <div class="col-12 d-flex gap-2 flex-wrap">
+            <button class="btn btn-gold" type="submit" th:text="#{book.confirm}">Confirm</button>
+            <a class="btn btn-outline-light" th:href="@{/barbers/{id}(id=${barber.id})}" th:text="#{book.change}">Change</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
+

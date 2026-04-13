@@ -1,0 +1,51 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body th:replace="~{fragments/layout :: layout(~{::main})}">
+<main>
+  <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-4">
+    <div>
+      <h1 class="h3 fw-bold mb-1">Services</h1>
+      <div class="text-secondary">Add/edit service names, duration and price.</div>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-light btn-sm" th:href="@{/admin}">← Dashboard</a>
+      <a class="btn btn-gold btn-sm" th:href="@{/admin/services/new}">+ Add service</a>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-dark table-hover align-middle">
+      <thead>
+      <tr>
+        <th>Code</th>
+        <th>EN</th>
+        <th>RU</th>
+        <th>HY</th>
+        <th>Duration</th>
+        <th>Price</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="s : ${services}">
+        <td><span class="badge badge-gold rounded-pill" th:text="${s.code}">CODE</span></td>
+        <td th:text="${s.nameEn}">Name</td>
+        <td th:text="${s.nameRu}">Name</td>
+        <td th:text="${s.nameHy}">Name</td>
+        <td class="text-secondary" th:text="${s.durationMinutes} + ' min'">30 min</td>
+        <td class="text-secondary" th:text="${s.priceAmd} + ' AMD'">0 AMD</td>
+        <td class="text-end">
+          <a class="btn btn-outline-light btn-sm" th:href="@{/admin/services/{id}/edit(id=${s.id})}">Edit</a>
+          <form th:action="@{/admin/services/delete}" method="post" class="d-inline">
+            <input type="hidden" name="id" th:value="${s.id}">
+            <button class="btn btn-outline-danger btn-sm" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>
+

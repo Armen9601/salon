@@ -1,0 +1,33 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body th:replace="~{fragments/layout :: layout(~{::main})}">
+<main class="py-5">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-7">
+      <div class="p-4 p-lg-5 rounded-4 card-glass">
+        <div class="badge badge-gold rounded-pill px-3 py-2 mb-3" th:text="#{home.badge}">Premium grooming</div>
+        <h1 class="display-5 fw-bold mb-3" th:text="#{home.title}">GEVORGYAN'S Salon</h1>
+        <p class="lead text-secondary mb-4" th:text="#{home.subtitle}">
+          Book a haircut, beard trim, or both. Choose your barber and a free time slot.
+        </p>
+        <div class="d-flex gap-2 flex-wrap">
+          <a class="btn btn-gold btn-lg" th:href="@{/barbers}" th:text="#{home.cta}">Book now</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="p-4 rounded-4 card-glass">
+        <h3 class="h5 fw-semibold mb-3" th:text="#{home.how.title}">How it works</h3>
+        <ol class="text-secondary mb-0">
+          <li th:text="#{home.how.1}">Select a barber</li>
+          <li th:text="#{home.how.2}">Pick services and date</li>
+          <li th:text="#{home.how.3}">Choose a free time slot</li>
+          <li th:text="#{home.how.4}">Enter name + phone and confirm</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
+

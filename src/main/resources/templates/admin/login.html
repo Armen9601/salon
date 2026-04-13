@@ -1,0 +1,39 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body th:replace="~{fragments/layout :: layout(~{::main})}">
+<main class="py-5">
+  <div class="mx-auto" style="max-width: 420px;">
+    <div class="p-4 rounded-4 card-glass">
+      <h1 class="h4 fw-bold mb-3" th:text="#{admin.login.title}">Admin sign in</h1>
+
+      <div th:if="${param.error}" class="alert alert-danger" th:text="#{admin.login.error}">
+        Invalid credentials
+      </div>
+      <div th:if="${param.logout}" class="alert alert-info" th:text="#{admin.login.logout}">
+        Logged out
+      </div>
+
+      <form th:action="@{/admin/login}" method="post" class="row g-3">
+        <div class="col-12">
+          <label class="form-label" th:text="#{admin.login.username}">Username</label>
+          <input class="form-control bg-dark text-light border-secondary" type="text" name="username" autofocus>
+        </div>
+        <div class="col-12">
+          <label class="form-label" th:text="#{admin.login.password}">Password</label>
+          <input class="form-control bg-dark text-light border-secondary" type="password" name="password">
+        </div>
+        <div class="col-12">
+          <button class="btn btn-gold w-100" type="submit" th:text="#{admin.login.submit}">Sign in</button>
+        </div>
+      </form>
+
+      <div class="text-secondary small mt-3">
+        <span th:text="#{admin.login.tip}">Tip:</span>
+        <code>admin / admin123</code>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
+

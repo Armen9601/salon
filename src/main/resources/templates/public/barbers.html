@@ -1,0 +1,38 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body th:replace="~{fragments/layout :: layout(~{::main})}">
+<main>
+  <div class="d-flex justify-content-between align-items-end gap-3 flex-wrap mb-4">
+    <div>
+      <h1 class="h3 fw-bold mb-1" th:text="#{barbers.title}">Barbers</h1>
+      <div class="text-secondary" th:text="#{barbers.subtitle}">Choose your barber to see the calendar.</div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-6 col-lg-4" th:each="b : ${barbers}">
+      <div class="card card-glass h-100 text-light">
+        <div class="card-body">
+          <div class="d-flex align-items-center gap-3">
+            <div class="rounded-circle bg-black border border-secondary d-flex align-items-center justify-content-center"
+                 style="width:56px;height:56px;">
+              <span class="fw-bold" th:text="${#strings.substring(b.fullName,0,1)}">B</span>
+            </div>
+            <div class="flex-grow-1">
+              <div class="fw-semibold fs-5" th:text="${b.fullName}">Barber Name</div>
+              <div class="text-secondary small" th:text="${b.bio}">Bio</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-transparent border-secondary">
+          <a class="btn btn-gold w-100" th:href="@{/barbers/{id}(id=${b.id})}" th:text="#{barbers.viewCalendar}">
+            View calendar
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
+

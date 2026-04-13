@@ -1,0 +1,196 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body th:replace="~{fragments/layout :: layout(~{::main})}">
+<main>
+  <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-4">
+    <div>
+      <h1 class="h3 fw-bold mb-1" th:text="#{admin.dashboard.title}">Admin dashboard</h1>
+      <div class="text-secondary" th:text="#{admin.dashboard.subtitle}">Manage availability and see bookings.</div>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-light btn-sm" th:href="@{/admin/barbers}">Barbers</a>
+      <a class="btn btn-outline-light btn-sm" th:href="@{/admin/services}">Services</a>
+      <form th:action="@{/admin/logout}" method="post" class="m-0">
+        <button class="btn btn-outline-light btn-sm" type="submit" th:text="#{admin.logout}">Logout</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg-4">
+      <div class="p-4 rounded-4 card-glass">
+        <h2 class="h6 fw-semibold mb-3" th:text="#{admin.availability.add}">Add availability</h2>
+        <form th:action="@{/admin/availability}" method="post" th:object="${availReq}" class="row g-3">
+          <div class="col-12">
+            <label class="form-label" th:text="#{admin.barber}">Barber</label>
+            <select class="form-select bg-dark text-light border-secondary" th:field="*{barberId}">
+              <option value="" th:text="#{admin.select}">Select...</option>
+              <option th:each="b : ${barbers}" th:value="${b.id}" th:text="${b.fullName}">Barber</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label" th:text="#{admin.date}">Date</label>
+            <input class="form-control bg-dark text-light border-secondary" type="date" th:field="*{date}">
+          </div>
+          <div class="col-6">
+            <label class="form-label" th:text="#{admin.start}">Start</label>
+            <input class="form-control bg-dark text-light border-secondary" type="time" th:field="*{start}">
+          </div>
+          <div class="col-6">
+            <label class="form-label" th:text="#{admin.end}">End</label>
+            <input class="form-control bg-dark text-light border-secondary" type="time" th:field="*{end}">
+          </div>
+          <div class="col-12">
+            <button class="btn btn-gold w-100" type="submit" th:text="#{admin.save}">Save</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="p-4 rounded-4 card-glass mt-3">
+        <h2 class="h6 fw-semibold mb-3" th:text="#{admin.busy.add}">Add busy time</h2>
+        <form th:action="@{/admin/busy}" method="post" th:object="${busyReq}" class="row g-3">
+          <div class="col-12">
+            <label class="form-label" th:text="#{admin.barber}">Barber</label>
+            <select class="form-select bg-dark text-light border-secondary" th:field="*{barberId}">
+              <option value="" th:text="#{admin.select}">Select...</option>
+              <option th:each="b : ${barbers}" th:value="${b.id}" th:text="${b.fullName}">Barber</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label" th:text="#{admin.date}">Date</label>
+            <input class="form-control bg-dark text-light border-secondary" type="date" th:field="*{date}">
+          </div>
+          <div class="col-6">
+            <label class="form-label" th:text="#{admin.start}">Start</label>
+            <input class="form-control bg-dark text-light border-secondary" type="time" th:field="*{start}">
+          </div>
+          <div class="col-6">
+            <label class="form-label" th:text="#{admin.end}">End</label>
+            <input class="form-control bg-dark text-light border-secondary" type="time" th:field="*{end}">
+          </div>
+          <div class="col-12">
+            <label class="form-label" th:text="#{admin.busy.reason}">Reason</label>
+            <input class="form-control bg-dark text-light border-secondary" th:field="*{reason}" placeholder="Walk-in / break">
+          </div>
+          <div class="col-12">
+            <button class="btn btn-outline-warning w-100" type="submit" th:text="#{admin.save}">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="p-4 rounded-4 card-glass mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="h6 fw-semibold mb-0" th:text="#{admin.bookings.title}">Bookings</h2>
+          <span class="text-secondary small" th:text="${#lists.size(bookings)} + ' ' + #{admin.items}">0 items</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle">
+            <thead>
+            <tr>
+              <th th:text="#{admin.barber}">Barber</th>
+              <th th:text="#{admin.when}">When</th>
+              <th th:text="#{admin.customer}">Customer</th>
+              <th th:text="#{admin.services}">Services</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="b : ${bookings}">
+              <td th:text="${b.barber.fullName}">Barber</td>
+              <td>
+                <div th:text="${#temporals.format(b.startAt,'yyyy-MM-dd HH:mm')}">start</div>
+                <div class="text-secondary small" th:text="${#temporals.format(b.endAt,'HH:mm')}">end</div>
+              </td>
+              <td>
+                <div th:text="${b.customerName}">Name</div>
+                <div class="text-secondary small" th:text="${b.customerPhone}">Phone</div>
+              </td>
+              <td class="text-secondary">
+                <span th:each="s : ${b.services}">
+                  <span class="badge badge-gold rounded-pill me-1"
+                        th:text="${#locale.language=='ru' ? s.nameRu : (#locale.language=='hy' ? s.nameHy : s.nameEn)}">
+                    Service
+                  </span>
+                </span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-4 card-glass">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="h6 fw-semibold mb-0" th:text="#{admin.availability.title}">Availability</h2>
+          <span class="text-secondary small" th:text="${#lists.size(availability)} + ' ' + #{admin.items}">0 items</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle">
+            <thead>
+            <tr>
+              <th th:text="#{admin.barber}">Barber</th>
+              <th th:text="#{admin.start}">Start</th>
+              <th th:text="#{admin.end}">End</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="a : ${availability}">
+              <td th:text="${a.barber.fullName}">Barber</td>
+              <td th:text="${#temporals.format(a.startAt,'yyyy-MM-dd HH:mm')}">start</td>
+              <td th:text="${#temporals.format(a.endAt,'HH:mm')}">end</td>
+              <td class="text-end">
+                <form th:action="@{/admin/availability/delete}" method="post" class="d-inline">
+                  <input type="hidden" name="id" th:value="${a.id}">
+                  <button class="btn btn-outline-danger btn-sm" type="submit" th:text="#{admin.delete}">Delete</button>
+                </form>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-4 card-glass mt-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="h6 fw-semibold mb-0" th:text="#{admin.busy.title}">Busy times</h2>
+          <span class="text-secondary small" th:text="${#lists.size(busyTimes)} + ' ' + #{admin.items}">0 items</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle">
+            <thead>
+            <tr>
+              <th th:text="#{admin.barber}">Barber</th>
+              <th th:text="#{admin.start}">Start</th>
+              <th th:text="#{admin.end}">End</th>
+              <th th:text="#{admin.busy.reason}">Reason</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="bt : ${busyTimes}">
+              <td th:text="${bt.barber.fullName}">Barber</td>
+              <td th:text="${#temporals.format(bt.startAt,'yyyy-MM-dd HH:mm')}">start</td>
+              <td th:text="${#temporals.format(bt.endAt,'HH:mm')}">end</td>
+              <td class="text-secondary" th:text="${bt.reason}">reason</td>
+              <td class="text-end">
+                <form th:action="@{/admin/busy/delete}" method="post" class="d-inline">
+                  <input type="hidden" name="id" th:value="${bt.id}">
+                  <button class="btn btn-outline-danger btn-sm" type="submit" th:text="#{admin.delete}">Delete</button>
+                </form>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
+

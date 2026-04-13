@@ -1,0 +1,75 @@
+:root {
+  --gold: #f2c14e;
+}
+
+body {
+  background: radial-gradient(1200px 600px at 10% 0%, rgba(242, 193, 78, 0.12), transparent 60%),
+              radial-gradient(1000px 500px at 90% 10%, rgba(242, 193, 78, 0.08), transparent 55%),
+              #0b0f14;
+}
+
+.container {
+  padding-left: max(var(--bs-gutter-x), 16px);
+  padding-right: max(var(--bs-gutter-x), 16px);
+}
+
+.card-glass {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.badge-gold {
+  background: rgba(242, 193, 78, 0.15);
+  border: 1px solid rgba(242, 193, 78, 0.35);
+  color: var(--gold);
+}
+
+.btn-gold {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #111;
+}
+.btn-gold:hover {
+  filter: brightness(0.95);
+  color: #111;
+}
+
+/* Mobile/touch tweaks */
+@media (max-width: 576px) {
+  .display-5 {
+    font-size: 2rem;
+    line-height: 1.15;
+  }
+
+  .card-glass {
+    border-radius: 16px !important;
+  }
+
+  .btn,
+  .form-control,
+  .form-select {
+    min-height: 44px; /* comfortable tap targets */
+  }
+
+  .navbar .btn {
+    min-height: 36px; /* keep navbar compact */
+  }
+
+  .table {
+    font-size: 0.92rem;
+  }
+
+  .table td,
+  .table th {
+    white-space: nowrap;
+  }
+}
+
+/* Prevent long content from breaking layout */
+code, pre, .text-break {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+

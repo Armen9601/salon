@@ -1,0 +1,129 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body th:replace="~{fragments/layout :: layout(~{::main})}">
+<main>
+  <div class="mb-4">
+    <a class="text-decoration-none text-secondary" th:href="@{/barbers}">← <span th:text="#{barber.back}">Back</span></a>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-5">
+      <div class="p-4 rounded-4 card-glass">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div class="rounded-circle bg-black border border-secondary d-flex align-items-center justify-content-center"
+               style="width:64px;height:64px;">
+            <span class="fw-bold fs-4" th:text="${#strings.substring(barber.fullName,0,1)}">B</span>
+          </div>
+          <div>
+            <h1 class="h4 fw-bold mb-1" th:text="${barber.fullName}">Barber</h1>
+            <div class="text-secondary" th:text="${barber.bio}">Bio</div>
+          </div>
+        </div>
+        <div class="text-secondary small" th:text="#{barber.tip}">
+          Pick services and a date to see free hours.
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-7">
+      <div class="p-4 rounded-4 card-glass">
+        <h2 class="h5 fw-semibold mb-3" th:text="#{barber.choose}">Choose services & date</h2>
+
+        <div th:if="${servicesRequired}" class="alert alert-warning" th:text="#{validation.servicesRequired}">
+          Please select at least one service.
+        </div>
+        <div th:if="${servicesConflict}" class="alert alert-warning" th:text="#{validation.servicesConflict}">
+          You cannot select both the combo and separate services.
+        </div>
+
+        <form th:action="@{/barbers/{id}/slots(id=${barber.id})}" method="get" class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label" th:text="#{barber.date}">Date</label>
+            <input class="form-control bg-dark text-light border-secondary" type="date" name="date"
+                   th:value="${date}">
+          </div>
+          <div class="col-12">
+            <div class="form-label" th:text="#{barber.services}">Services</div>
+            <div class="row g-2">
+              <div class="col-md-6" th:each="s : ${services}">
+                <label class="w-100 p-3 rounded-3 border border-secondary d-flex justify-content-between align-items-center"
+                       style="background: rgba(0,0,0,0.25); cursor:pointer;">
+                  <div>
+                    <div class="fw-semibold"
+                         th:text="${#locale.language=='ru' ? s.nameRu : (#locale.language=='hy' ? s.nameHy : s.nameEn)}">
+                      Service
+                    </div>
+                    <div class="text-secondary small">
+                      <span th:text="${s.durationMinutes}">30</span>
+                      <span th:text="#{minutes}">min</span>
+                    </div>
+                  </div>
+                  <div class="text-end">
+                    <div class="badge badge-gold rounded-pill" th:text="${s.priceAmd} + ' AMD'">5000 AMD</div>
+                    <div class="form-check mt-2 d-flex justify-content-end">
+                      <input class="form-check-input" type="checkbox" name="serviceIds" th:value="${s.id}" th:attr="data-code=${s.code}">
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 d-flex gap-2 flex-wrap">
+            <button class="btn btn-gold" type="submit" th:text="#{barber.showSlots}">Show free hours</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+  (function () {
+    const form = document.querySelector('form[action*="/slots"]');
+    if (!form) return;
+    const btn = form.querySelector('button[type="submit"]');
+    const checks = form.querySelectorAll('input[type="checkbox"][name="serviceIds"]');
+    if (!btn || !checks.length) return;
+
+    const byText = (t) => Array.from(checks).find(c => (c.closest('label')?.innerText || '').toUpperCase().includes(t));
+    const combo = byText('HAIRCUT + BEARD') || byText('СТРИЖ') || byText('ՍԱՆՐՎԱԾՔ');
+    // Better: detect by hidden data-code if present
+    const byCode = (code) => Array.from(checks).find(c => c.dataset.code === code);
+
+    // attach data-code from DOM if it exists (set below if missing)
+    Array.from(checks).forEach(c => {
+      if (c.dataset.code) return;
+      const labelText = (c.closest('label')?.innerText || '').toUpperCase();
+      if (labelText.includes('HAIRCUT + BEARD') || labelText.includes('СТРИЖКА +') || labelText.includes('ՍԱՆՐՎԱԾՔ +')) c.dataset.code = 'HAIRCUT_BEARD';
+      else if (labelText.includes('HAIRCUT') || labelText.includes('СТРИЖКА') || labelText.includes('ՍԱՆՐՎԱԾՔ')) c.dataset.code = 'HAIRCUT';
+      else if (labelText.includes('BEARD') || labelText.includes('БОРОДА') || labelText.includes('ՄՈՐՈՒՍ')) c.dataset.code = 'BEARD';
+    });
+
+    function update() {
+      const any = Array.from(checks).some(c => c.checked);
+      btn.disabled = !any;
+
+      const comboCb = byCode('HAIRCUT_BEARD');
+      const haircutCb = byCode('HAIRCUT');
+      const beardCb = byCode('BEARD');
+      if (comboCb && (haircutCb || beardCb)) {
+        if (comboCb.checked) {
+          if (haircutCb) { haircutCb.checked = false; haircutCb.disabled = true; }
+          if (beardCb) { beardCb.checked = false; beardCb.disabled = true; }
+        } else if ((haircutCb && haircutCb.checked) || (beardCb && beardCb.checked)) {
+          comboCb.checked = false;
+          comboCb.disabled = true;
+        } else {
+          comboCb.disabled = false;
+          if (haircutCb) haircutCb.disabled = false;
+          if (beardCb) beardCb.disabled = false;
+        }
+      }
+    }
+
+    checks.forEach(c => c.addEventListener('change', update));
+    update();
+  })();
+</script>
+</body>
+</html>
+

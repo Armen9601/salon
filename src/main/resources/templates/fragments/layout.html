@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout(content)">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="#{app.title}">GEVORGYAN'S Salon</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css" rel="stylesheet">
+  <link th:href="@{/assets/app.css}" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-black border-bottom border-secondary sticky-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold" th:href="@{/}" th:text="#{app.brand}">GEVORGYAN'S Salon</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" th:href="@{/barbers}" th:text="#{nav.barbers}">Barbers</a></li>
+      </ul>
+      <div class="d-flex align-items-center gap-2"
+           th:with="base=${currentUrlNoLang != null ? currentUrlNoLang : '/'},
+                    join=${#strings.contains(base,'?') ? '&' : '?'}">
+        <a class="btn btn-outline-light btn-sm d-flex align-items-center gap-2" th:href="${base + join + 'lang=en'}">
+          <span class="fi fi-gb"></span><span class="d-none d-md-inline">EN</span>
+        </a>
+        <a class="btn btn-outline-light btn-sm d-flex align-items-center gap-2" th:href="${base + join + 'lang=ru'}">
+          <span class="fi fi-ru"></span><span class="d-none d-md-inline">RU</span>
+        </a>
+        <a class="btn btn-outline-light btn-sm d-flex align-items-center gap-2" th:href="${base + join + 'lang=hy'}">
+          <span class="fi fi-am"></span><span class="d-none d-md-inline">HY</span>
+        </a>
+        <a class="btn btn-warning btn-sm" th:href="@{/admin}" th:text="#{nav.admin}">Admin</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="container py-4" th:replace="${content}">
+  <div class="text-secondary">Content</div>
+</main>
+
+<footer class="container py-4 border-top border-secondary text-secondary small">
+  <div class="d-flex justify-content-between flex-wrap gap-2">
+    <div th:text="#{footer.copy}">© GEVORGYAN'S Salon</div>
+    <div th:text="#{footer.note}">Bookings are confirmed instantly if the slot is free.</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
