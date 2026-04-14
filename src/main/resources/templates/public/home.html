@@ -13,6 +13,34 @@
         <div class="d-flex gap-2 flex-wrap">
           <a class="btn btn-gold btn-lg" th:href="@{/barbers}" th:text="#{home.cta}">Book now</a>
         </div>
+
+        <hr class="border-secondary my-4">
+
+        <!-- Salon contacts -->
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="text-secondary small mb-1" th:text="#{home.phone.label}">Phone</div>
+            <a class="fw-semibold text-decoration-none text-light" href="tel:+37498929166">+374 98 92 91 66</a>
+          </div>
+          <div class="col-md-6">
+            <div class="text-secondary small mb-1" th:text="#{home.address.label}">Address</div>
+            <div class="fw-semibold">Armenia, Gyumri, Vahan Cheraz 10</div>
+            <a class="text-decoration-none" target="_blank" rel="noopener"
+               href="https://yandex.com/maps/?rtext=~Armenia%2C%20Gyumri%2C%20Vahan%20Cheraz%2010&rtt=auto">
+              <span th:text="#{home.directions}">Directions</span> →
+            </a>
+          </div>
+          <div class="col-12">
+            <div class="text-secondary small mb-2" th:text="#{home.map.title}">Find us on the map</div>
+            <div class="ratio ratio-21x9 rounded-4 overflow-hidden border border-secondary">
+              <iframe
+                  src="https://yandex.com/map-widget/v1/?text=Armenia%2C%20Gyumri%2C%20Vahan%20Cheraz%2010&z=17"
+                  frameborder="0"
+                  allowfullscreen="true">
+              </iframe>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="col-lg-5">
